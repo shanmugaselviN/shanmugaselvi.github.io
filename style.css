@@ -1,0 +1,106 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI';
+}
+
+body {
+    margin: 0;
+}
+
+/* LOGIN BACKGROUND */
+.login-bg {
+    background: linear-gradient(to right, #ff9966, #ff5e62);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* CARD DESIGN */
+.card {
+    background: white;
+    padding: 30px;
+    width: 360px;
+    text-align: center;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.card h1 {
+    color: #ff5e62;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 12px;
+    width: 100%;
+    background: #ff5e62;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #e14b4b;
+}
+
+/* DASHBOARD */
+.dashboard {
+    background: linear-gradient(to right, #36d1dc, #5b86e5);
+    min-height: 100vh;
+    padding: 30px;
+}
+
+.box {
+    background: white;
+    max-width: 900px;
+    margin: auto;
+    padding: 25px;
+    border-radius: 15px;
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+th {
+    background: #5b86e5;
+    color: white;
+    padding: 10px;
+}
+
+td {
+    padding: 10px;
+    text-align: center;
+    background: #f9f9f9;
+}
+
+tr:nth-child(even) td {
+    background: #e3f2fd;
+}
+
+.action-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+}
+
+.edit {
+    background: green;
+}
+
+.delete {
+    background: red;
+}

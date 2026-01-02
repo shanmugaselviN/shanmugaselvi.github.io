@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mess Fusion Dashboard</title>
+
+<style>
+/* ===== Page Background ===== */
+body{
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    font-family: Arial, sans-serif;
+}
+
+/* ===== Main Box ===== */
+.box{
+    width: 850px;
+    margin: 40px auto;
+    background: linear-gradient(180deg,#ffffff,#f3f7ff);
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0px 10px 25px rgba(0,0,0,0.35);
+}
+
+/* ===== Heading ===== */
+h2{
+    text-align: center;
+    margin-bottom: 25px;
+    color: #2c3e50;
+}
+
+/* ===== Input Boxes ===== */
+input{
+    width: 90%;
+    padding: 14px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 1px solid #bbb;
+    font-size: 16px;
+    background: linear-gradient(to right,#fdfbfb,#ebedee);
+}
+input:focus{
+    outline: none;
+    border: 2px solid #667eea;
+    background: #ffffff;
+}
+
+/* ===== Error Messages ===== */
+.error{
+    color: red;
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+/* ===== Buttons ===== */
+button{
+    padding: 11px 22px;
+    border: none;
+    cursor: pointer;
+    border-radius: 7px;
+    margin: 3px;
+    font-weight: bold;
+    font-size: 14px;
+    transition: 0.3s;
+}
+.add-btn{ background:#4CAF50; color:white; }
+.add-btn:hover{ background:#2e7d32; }
+
+.edit{ background:#2196F3; color:white; }
+.edit:hover{ background:#1565c0; }
+
+.delete{ background:#f44336; color:white; }
+.delete:hover{ background:#c62828; }
+
+.view{ background:#9c27b0; color:white; }
+.view:hover{ background:#6a1b9a; }
+
+/* ===== Table ===== */
+table{
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+    text-align: center;
+    font-size: 15px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0px 6px 18px rgba(0,0,0,0.25);
+}
+
+/* ===== Table Heading Background Colours ===== */
+th{
+    color:white;
+    padding: 14px;
+    font-size: 15px;
+}
+.th1{ background: linear-gradient(45deg,#ff9800,#ff5722); }
+.th2{ background: linear-gradient(45deg,#2196f3,#03a9f4); }
+.th3{ background: linear-gradient(45deg,#4caf50,#8bc34a); }
+.th4{ background: linear-gradient(45deg,#9c27b0,#e040fb); }
+.th5{ background: linear-gradient(45deg,#f44336,#e91e63); }
+
+/* ===== Table Data ===== */
+td{
+    padding:12px;
+    font-weight: 500;
+}
+
+/* ===== Row Background ===== */
+tr:nth-child(even){ background: #e3f2fd; }
+tr:nth-child(odd){ background: #fce4ec; }
+tr:hover{
+    background: #fff9c4;
+    transition:0.3s;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+<h2>👩‍🎓 Student Mess Details</h2>
+
+<form id="form">
+    <input type="text" id="name" placeholder="Student Name">
+    <div class="error" id="nameError"></div>
+
+    <input type="text" id="room" placeholder="Room Number">
+    <div class="error" id="roomError"></div>
+
+    <input type="text" id="mobile" placeholder="Mobile Number">
+    <div class="error" id="mobileError"></div>
+
+    <center>
+        <button class="add-btn" type="submit">Add Student</button>
+    </center>
+</form>
+
+<table>
+<thead>
+<tr>
+    <th class="th1">S.No</th>
+    <th class="th2">Name</th>
+    <th class="th3">Room</th>
+    <th class="th4">Mobile</th>
+    <th class="th5">Action</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+
+<script>
+let data = [];
+let editIndex = -1;
+
+const nameInput = document.getElementById("name");
+const roomInput = document.getElementById("room");
+const mobileInput = document.getElementById("mobile");
+const nameError = document.getElementById("nameError");
+const roomError = document.getElementById("roomError");
+const mobileError = document.getElementById("mobileError");
+const form = document.getElementById("form");
+const tbody = document.getElementById("tbody");
+
+/* ===== Live Validation ===== */
+nameInput.addEventListener("input", ()=>{
+    nameError.textContent =
+        /^[A-Za-z ]*$/.test(nameInput.value)
+        ? ""
+        : "Please enter letters only.";
+});
+
+roomInput.addEventListener("input", ()=>{
+    roomError.textContent =
+        /^[0-9]*$/.test(roomInput.value)
+        ? ""
+        : "Please enter numbers only.";
+});
+
+mobileInput.addEventListener("input", ()=>{
+    if(!/^[0-9]*$/.test(mobileInput.value))
+        mobileError.textContent = "Only numbers are allowed.";
+    else if(mobileInput.value.length > 10)
+        mobileError.textContent = "Mobile number must be 10 digits.";
+    else
+        mobileError.textContent = "";
+});
+
+/* ===== Submit ===== */
+form.addEventListener("submit", e=>{
+    e.preventDefault();
+
+    if(!nameInput.value || !roomInput.value || !mobileInput.value){
+        alert("Please fill all fields.");
+        return;
+    }
+
+    if(nameError.textContent || roomError.textContent || mobileError.textContent){
+        alert("Please correct the errors.");
+        return;
+    }
+
+    if(mobileInput.value.length != 10){
+        alert("Mobile number must be exactly 10 digits.");
+        return;
+    }
+
+    let obj = { n:nameInput.value, r:roomInput.value, m:mobileInput.value };
+
+    editIndex==-1 ? data.push(obj) : data[editIndex]=obj;
+    editIndex=-1;
+
+    form.reset();
+    display();
+});
+
+/* ===== Display ===== */
+function display(){
+    tbody.innerHTML="";
+    data.forEach((d,i)=>{
+        tbody.innerHTML+=`
+        <tr>
+            <td>${i+1}</td>
+            <td>${d.n}</td>
+            <td>${d.r}</td>
+            <td>${d.m}</td>
+            <td>
+                <button class="view" onclick="view(${i})">View</button>
+                <button class="edit" onclick="edit(${i})">Edit</button>
+                <button class="delete" onclick="del(${i})">Delete</button>
+            </td>
+        </tr>`;
+    });
+}
+
+function edit(i){
+    nameInput.value=data[i].n;
+    roomInput.value=data[i].r;
+    mobileInput.value=data[i].m;
+    editIndex=i;
+}
+
+function del(i){
+    if(confirm("Are you sure?")){
+        data.splice(i,1);
+        display();
+    }
+}
+
+function view(i){
+    alert(`Student Name : ${data[i].n}
+Room Number : ${data[i].r}
+Mobile : ${data[i].m}`);
+}
+</script>
+
+</body>
+</html>
